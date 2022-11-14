@@ -1,4 +1,4 @@
-powershell "IEX(New-Object Net.WebClient).downloadString('https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1')"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile "setup_wsl.ps1"
 function Test-Admin {
     $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
     $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
