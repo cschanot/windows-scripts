@@ -1,16 +1,36 @@
-function Test-Admin {
-    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
-    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
+$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
+
+$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
+
+if ($myWindowsPrincipal.IsInRole($adminRole))
+{
+   $Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Elevated)"
+   $Host.UI.RawUI.BackgroundColor = "DarkBlue"
+   Clear-Host
+}
+else
+{ 
+   $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
+   $scriptName = $myInvocation.MyCommand.Definition
+   $newProcess.Arguments = "-File $scriptName"
+   $newProcess.Verb = "runas";
+   [System.Diagnostics.Process]::Start($newProcess);
+
+   exit
 }
 
-if ((Test-Admin) -eq $false)  {
-    if ($elevated) {
-        # tried to elevate, did not work, aborting
-    } else {
-        Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -noexit -file "{0}" -elevated' -f ($myinvocation.MyCommand.Definition))
-    }
-    exit
+if ($pshome -like "*syswow64*") {
+	
+	write-warning "Restarting script under 64 bit powershell"
+
+	& (join-path ($pshome -replace "syswow64", "sysnative") powershell.exe) -file `
+		(join-path $psscriptroot $myinvocation.mycommand) @args
+
+	exit
 }
+
+#Set-ExecutionPolicy RemoteSigned -Force
 ## GET RID OF THAT PESKY UAC PROMPT
 Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
 ### PROBABLY SHOULD CHECK BEFORE WE DO BELOW ALSO CHANGE TO Set-ItemProperty
