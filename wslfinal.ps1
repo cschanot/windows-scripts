@@ -31,6 +31,6 @@ wsl -u root service docker start
 }
 else {
 wsl docker ps
-wsl -u root docker run --detach --name watchtower --volume /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower
+#wsl -u root docker run --detach --name watchtower --volume /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower
 }
 exit
