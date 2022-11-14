@@ -8,8 +8,7 @@ if ((Test-Admin) -eq $false)  {
     if ($elevated) {
         # tried to elevate, did not work, aborting
     } else {
-        
-        Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -noexit -file "setup_wsl.ps1" -elevated' -f ".\setup_wsl.ps1")
+        Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -noexit -file $MyInvocation.MyCommand.Path\setup_wsl.ps1 -elevated')
     }
     exit
 }
