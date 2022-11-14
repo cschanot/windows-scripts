@@ -10,9 +10,9 @@ if ((Test-Admin) -eq $false)  {
     if ($elevated) {
         # tried to elevate, did not work, aborting
     } else {
+        Write-Output "ATTEMPTING TO ELEVATE"
         Start-Process powershell -ArgumentList '-noprofile -file $DOWNLOADPATH\setup_wsl.ps1' -verb RunAs
     }
-    exit
 }
 
 #Set-ExecutionPolicy RemoteSigned -Force
