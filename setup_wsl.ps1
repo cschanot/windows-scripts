@@ -1,6 +1,6 @@
-$DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
+$DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path + "\wsl_setup.wsl"
 Write-Output $DOWNLOADPATH
-Invoke-WebRequest -Headers @{"Cache-Control"="no-cache"} -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile "$DOWNLOADPATH\setup_wsl.ps1"
+Invoke-WebRequest -Headers @{"Cache-Control"="no-cache"} -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile $DOWNLOADPATH
 
 Function Check-RunAsAdministrator()
 {
@@ -18,7 +18,7 @@ Function Check-RunAsAdministrator()
        $ElevatedProcess = New-Object System.Diagnostics.ProcessStartInfo "PowerShell";
  
        # Specify the current script path and name as a parameter
-       $ElevatedProcess.Arguments = "& '" + $DOWNLOADPATH\setup_wsl.ps1 + "'"
+       $ElevatedProcess.Arguments = "& '" + $DOWNLOADPATH + "'"
  
        #Set the Process to elevated
        $ElevatedProcess.Verb = "runas"
