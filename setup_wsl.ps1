@@ -1,5 +1,4 @@
 $DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path + "\wsl_setup.ps1"
-Write-Output $DOWNLOADPATH
 Invoke-WebRequest -Headers @{"Cache-Control"="no-cache"} -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile $DOWNLOADPATH
 
 Function Check-RunAsAdministrator()
