@@ -11,7 +11,7 @@ if ((Test-Admin) -eq $false)  {
         # tried to elevate, did not work, aborting
     } else {
         Write-Output "ATTEMPTING TO ELEVATE"
-        Start-Process powershell -ArgumentList '-noprofile -elevate -file $DOWNLOADPATH\setup_wsl.ps1' -verb RunAs
+        powershell.exe Start-Process powershell.exe $DOWNLOADPATH\setup_wsl.ps1 -Verb runAs
     }
 }
 
