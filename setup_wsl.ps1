@@ -1,4 +1,5 @@
 $DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path + "\wsl_setup.ps1"
+$DOWNLOADPATHF = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 Invoke-WebRequest -Headers @{"Cache-Control"="no-cache"} -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile $DOWNLOADPATH
 
 Function Check-RunAsAdministrator()
@@ -51,13 +52,13 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 wsl --set-default-version 2
 wsl --install
 $URL = "https://raw.githubusercontent.com/cschanot/windows-scripts/main/wslfinal.ps1"
-Invoke-WebRequest -URI $URL -OutFile $DOWNLOADPATH\wslfinal.ps1
+Invoke-WebRequest -URI $URL -OutFile $DOWNLOADPATHF\wslfinal.ps1
 
 # Download second script, this will run every reboot
 
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" `
     -Name "Application" `
-    -Value "c:\windows\system32\WindowsPowerShell\v1.0\powershell.exe $DOWNLOADPATH\wslfinal.ps1"
+    -Value "c:\windows\system32\WindowsPowerShell\v1.0\powershell.exe $DOWNLOADPATHF\wslfinal.ps1"
 $wshell = New-Object -ComObject Wscript.Shell
   $answer = $wshell.Popup("OK TO RESTART?",0,"RESTART WARNING",0x4)
 
