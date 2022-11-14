@@ -1,34 +1,9 @@
-$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
-$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
+$Loc = Get-Location
+"Security.Principal.Windows" | % { IEX "( [ $_`Principal ] [$_`Identity ]::GetCurrent() ).IsInRole( 'Administrator' )" } | ? {
+    $True | % { $Arguments =  @('-NoProfile','-ExecutionPolicy Bypass','-NoExit','-File',"`"$($MyInvocation.MyCommand.Path)`"","\`"$Loc\`"");
+    Start-Process -FilePath PowerShell.exe -Verb RunAs -ArgumentList $Arguments; } }
 
-$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
-
-if ($myWindowsPrincipal.IsInRole($adminRole))
-{
-   $Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Elevated)"
-   $Host.UI.RawUI.BackgroundColor = "DarkBlue"
-   Clear-Host
-}
-else
-{ 
-   $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
-   $scriptName = $myInvocation.MyCommand.Definition
-   $newProcess.Arguments = "-File $scriptName"
-   $newProcess.Verb = "runas";
-   [System.Diagnostics.Process]::Start($newProcess);
-
-   exit
-}
-
-if ($pshome -like "*syswow64*") {
-	
-	write-warning "Restarting script under 64 bit powershell"
-
-	& (join-path ($pshome -replace "syswow64", "sysnative") powershell.exe) -file `
-		(join-path $psscriptroot $myinvocation.mycommand) @args
-
-	exit
-}
+(Get-Location).ToString()
 
 #Set-ExecutionPolicy RemoteSigned -Force
 ## GET RID OF THAT PESKY UAC PROMPT
