@@ -1,19 +1,38 @@
 $DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 Write-Output $DOWNLOADPATH
 Invoke-WebRequest -Headers @{"Cache-Control"="no-cache"} -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile "$DOWNLOADPATH\setup_wsl.ps1"
-function Test-Admin {
-    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
-    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-}
-
-if ((Test-Admin) -eq $false)  {
-    if ($elevated) {
-        # tried to elevate, did not work, aborting
-    } else {
-        Write-Output "ATTEMPTING TO ELEVATE"
-        powershell.exe Start-Process powershell.exe $DOWNLOADPATH\setup_wsl.ps1 -Verb runAs
+Function Check-RunAsAdministrator()
+{
+  #Get current user context
+  $CurrentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
+  
+  #Check user is running the script is member of Administrator Group
+  if($CurrentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator))
+  {
+       Write-host "Script is running with Administrator privileges!"
+  }
+  else
+    {
+       #Create a new Elevated process to Start PowerShell
+       $ElevatedProcess = New-Object System.Diagnostics.ProcessStartInfo "PowerShell";
+ 
+       # Specify the current script path and name as a parameter
+       $ElevatedProcess.Arguments = "& '" + $DOWNLOADPATH\wsl_setup.ps1 + "'"
+ 
+       #Set the Process to elevated
+       $ElevatedProcess.Verb = "runas"
+ 
+       #Start the new elevated process
+       [System.Diagnostics.Process]::Start($ElevatedProcess)
+ 
+       #Exit from the current, unelevated, process
+       Exit
+ 
     }
 }
+ 
+#Check Script is running with Elevated Privileges
+Check-RunAsAdministrator
 
 #Set-ExecutionPolicy RemoteSigned -Force
 ## GET RID OF THAT PESKY UAC PROMPT
