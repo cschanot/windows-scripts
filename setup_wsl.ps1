@@ -10,7 +10,7 @@ if ((Test-Admin) -eq $false)  {
     if ($elevated) {
         # tried to elevate, did not work, aborting
     } else {
-        Start-Process powershell -ArgumentList '-noprofile -command &{Start-Process $DOWNLOADPATH\setup_wsl.ps1 -verb Runas}'
+        Start-Process powershell -ArgumentList '-noprofile -command $DOWNLOADPATH\setup_wsl.ps1 -verb Runas}'
     }
     exit
 }
