@@ -31,7 +31,7 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 wsl --set-default-version 2
 wsl --install
 $DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
-$URL = 
+$URL = "https://raw.githubusercontent.com/cschanot/windows-scripts/main/wslfinal.ps1"
 Invoke-WebRequest -URI $URL -OutFile $DOWNLOADPATH\wslfinal.ps1
 
 # Download second script, this will run every reboot
