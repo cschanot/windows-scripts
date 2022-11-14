@@ -1,7 +1,3 @@
-Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
-
-param([switch]$Elevated)
-
 function Test-Admin {
     $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
     $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
@@ -15,6 +11,10 @@ if ((Test-Admin) -eq $false)  {
     }
     exit
 }
+
+Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
+
+
 $isRunning = wsl.exe -u root service docker status
 # WILL BE UNRECOGNIZED IF NOT INSTALLED
 if ($isRunning -like "*unrecognized*") {
