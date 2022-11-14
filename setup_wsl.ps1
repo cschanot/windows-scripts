@@ -18,7 +18,7 @@ Function Check-RunAsAdministrator()
        $ElevatedProcess = New-Object System.Diagnostics.ProcessStartInfo "PowerShell";
  
        # Specify the current script path and name as a parameter
-       $ElevatedProcess.Arguments = "& '" + $DOWNLOADPATH + "'"
+       $ElevatedProcess.Arguments = "& '" + "powershell.exe " + $DOWNLOADPATH + "'"
  
        #Set the Process to elevated
        $ElevatedProcess.Verb = "runas"
