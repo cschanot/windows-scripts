@@ -1,11 +1,3 @@
-## GET RID OF THAT PESKY UAC PROMPT
-Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
-### PROBABLY SHOULD CHECK BEFORE WE DO BELOW ALSO CHANGE TO Set-ItemProperty
-reg add HKCU\Software\Microsoft\Powershell\1\ShellIds\Microsoft.PowerShell /v ExecutionPolicy /t REG_SZ /d RemoteSigned /f
-
-
-param([switch]$Elevated)
-
 function Test-Admin {
     $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
     $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
@@ -19,8 +11,12 @@ if ((Test-Admin) -eq $false)  {
     }
     exit
 }
+## GET RID OF THAT PESKY UAC PROMPT
+Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
+### PROBABLY SHOULD CHECK BEFORE WE DO BELOW ALSO CHANGE TO Set-ItemProperty
+reg add HKCU\Software\Microsoft\Powershell\1\ShellIds\Microsoft.PowerShell /v ExecutionPolicy /t REG_SZ /d RemoteSigned /f
 
-'running with full privileges'
+
 
 # Enable Virtual Machine Platform feature
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
