@@ -1,4 +1,5 @@
-Invoke-WebRequest -Headers @{"Cache-Control"="no-cache"} -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile "setup_wsl.ps1"
+$DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
+Invoke-WebRequest -Headers @{"Cache-Control"="no-cache"} -Uri "https://raw.githubusercontent.com/cschanot/windows-scripts/main/setup_wsl.ps1" -OutFile "$DOWNLOADPATH\setup_wsl.ps1"
 function Test-Admin {
     $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
     $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
@@ -8,7 +9,7 @@ if ((Test-Admin) -eq $false)  {
     if ($elevated) {
         # tried to elevate, did not work, aborting
     } else {
-        Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -noexit -file $MyInvocation.MyCommand.Path\setup_wsl.ps1 -elevated')
+        Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList -ArgumentList ('-noprofile -noexit -elevated') $DOWNLOADPATH\setup_wsl.ps1
     }
     exit
 }
@@ -29,7 +30,6 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 # Any distribution installed after this, would run on WSL 2
 wsl --set-default-version 2
 wsl --install
-$DOWNLOADPATH = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path
 $URL = "https://raw.githubusercontent.com/cschanot/windows-scripts/main/wslfinal.ps1"
 Invoke-WebRequest -URI $URL -OutFile $DOWNLOADPATH\wslfinal.ps1
 
